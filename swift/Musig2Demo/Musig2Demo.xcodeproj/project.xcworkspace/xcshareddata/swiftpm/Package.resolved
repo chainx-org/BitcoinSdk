@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Musig2Bitcoin",
+        "repositoryURL": "https://github.com/chainx-org/musig2-ios-api",
+        "state": {
+          "branch": null,
+          "revision": "d04fb0e5b49b962387eb1dc62b105b4f7c9f19ad",
+          "version": "2.6.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,2 @@
+rootProject.name = "Bitcoin Demo"
+include ':app'

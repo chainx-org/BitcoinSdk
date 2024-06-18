@@ -51,7 +51,7 @@ Construct an original transaction, which is used to calculate the transaction ha
 
 ---
 
-### **getSighash(prev_tx, tx, input_index, agg_pubkey, sigversion)**
+### **getSighash(prev_tx, tx, input_index, agg_pubkey, sigversion, proto)**
 
 #### **illustrate**
 
@@ -66,6 +66,7 @@ Calculate the transaction hash (sighash). A transaction has multiple inputs, and
 | **input_index** | UInt32   | Input transaction index                                      |
 | **agg_pubkey**  | String   | When the input is a non-threshold address, fill in ""; when the input is a threshold address, fill in the aggregate public key (getAggPublicKey) |
 | **sigversion**  | UInt32   | When the input is a non-threshold address, fill in 0; when the input is a threshold address, fill in 1; |
+|                 |          |                                                              |
 | **Return**      | String   | Current input transaction hash                               |
 
 #### **Return Error**
@@ -94,7 +95,7 @@ For non-threshold addresses, use the above sighash and this function to calculat
 
 ---
 
-### **buildTaprootTx(tx, signature, input_index)**
+### **buildTaprootTx(tx, signature, input_index, proto)**
 
 #### **illustrate**
 
@@ -107,6 +108,7 @@ When the address is not threshold, use this function to assemble the signature g
 | **tx**          | String   | Original transaction calculated by generateRawTx |
 | **signature**   | String   | Single Schnorr signature                         |
 | **input_index** | UInt32   | Input transaction index                          |
+|                 |          |                                                  |
 | **Return**      | String   | Return the assembled transaction                 |
 
 #### **Return Error**
@@ -423,7 +425,7 @@ Generate aggregate public key
 
 ---
 
-### **generateControlBlock(pubkeys, threshold, aggPubkey)**
+### **generateControlBlock(pubkeys, threshold, aggPubkey, proto)**
 
 #### **illustrate**
 
@@ -432,11 +434,12 @@ Generate proof
 #### **Parameters and return values**
 
 | **Name**      | **Type** | **Description**                                              |
-  | ------------- | -------- | ------------------------------------------------------------ |
-  | **pubkeys**   | [String] | List of all public keys                                      |
-  | **threshold** | UInt8    | Threshold                                                    |
-  | **aggPubkey** | String   | The aggregate public key of this multi-signature participant |
-  | **Return**    | String   | proof                                                        |
+| ------------- | -------- | ------------------------------------------------------------ |
+| **pubkeys**   | [String] | List of all public keys                                      |
+| **threshold** | UInt8    | Threshold                                                    |
+| **aggPubkey** | String   | The aggregate public key of this multi-signature participant |
+|               |          |                                                              |
+| **Return**    | String   | proof                                                        |
 
 #### **Return Error**
 
@@ -489,7 +492,7 @@ The following examples provide: constructing a non-threshold address, the cost o
    txid and input_index are used to locate the output to be spent, agg_pubkey fills in the string `""` for non-threshold signature addresses, sigversion fills in 0 for non-threshold signature addresses, tx is the currently constructed transaction.**Note that when calculating sighash, always use the above `generateRawTx` to construct the result and cannot be changed. **
 
    ~~~swift
-   let sighash = getSighash(tx: base_tx, txid: txids[i],input_index: input_indexs[i], agg_pubkey: "", sigversion: 0);
+   let sighash = getSighash(tx: base_tx, txid: txids[i],input_index: input_indexs[i], agg_pubkey: "", sigversion: 0, proto: "");
    ~~~
 
    After calculating the sighash, use the private key to sign it. The message refers to sighash, and the privkey refers to the private key.
@@ -513,7 +516,7 @@ The following examples provide: constructing a non-threshold address, the cost o
 1. Generate a 2-of-3 threshold signature address as follows. First, pass in the public keys and thresholds of all participants to generate the threshold public keys.
 
     ~~~swift
-    let threshold_pubkey = generateThresholdPubkey(pubkeys: [pubkey0, pubkey1, pubkey2], threshold: 2);
+    let threshold_pubkey = generateThresholdPubkey(pubkeys: [pubkey0, pubkey1, pubkey2], threshold: 2, proto: "");
     ~~~
     
 2. Then encode the public key into an address to get the threshold address
@@ -544,7 +547,7 @@ The following examples provide: constructing a non-threshold address, the cost o
 
    ~~~swift
    let pubkey_bc = getAggPublicKey(pubkeys: [pubkey_b, pubkey_c])
-   let sighash = getSighash(tx: base_tx, txid: txids[i], input_index: input_indexs[i], agg_pubkey: pubkey_bc, sigversion: 1);
+   let sighash = getSighash(tx: base_tx, txid: txids[i], input_index: input_indexs[i], agg_pubkey: pubkey_bc, sigversion: 1, proto: "");
    ~~~
 
    **Calculate signature**: After calculating sighash, B and C use Musig2 to aggregate signatures. The signed message is sighash.
@@ -590,7 +593,7 @@ The following examples provide: constructing a non-threshold address, the cost o
    **Calculate proof**: The cost of threshold signature not only requires signature, but also calculates proof. It is necessary to pass in the public key of everyone, the threshold, and the aggregate public key of participants B and C of this signature.
 
    ~~~swift
-   let control_block = generateControlBlock(pubkeys: [pubkey_a, pubkey_b, pubkey_c], threshold: 2, agg_pubkey: pubkey_bc)
+   let control_block = generateControlBlock(pubkeys: [pubkey_a, pubkey_b, pubkey_c], threshold: 2, agg_pubkey: pubkey_bc, proto: "")
    ~~~
 
 3. **Assemble the above signature and proof for transaction**. tx is the current transaction to be constructed, agg_signature is the aggregate signature of B and C, agg_pubkey is the aggregate public key of B and C, txid and input_index are still used to locate the input corresponding to the signature in tx, and the unspent output corresponding to txid and input_index The second step is corresponding.

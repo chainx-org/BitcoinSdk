@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		785968CF2C218EC600EE5ED8 /* Musig2Bitcoin in Frameworks */ = {isa = PBXBuildFile; productRef = 785968CE2C218EC600EE5ED8 /* Musig2Bitcoin */; };
 		7889083227F3061F00802D83 /* Musig2Bitcoin in Frameworks */ = {isa = PBXBuildFile; productRef = 7889083127F3061F00802D83 /* Musig2Bitcoin */; };
 		78AF05A52719E42F00C5225A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF05A42719E42F00C5225A /* AppDelegate.swift */; };
 		78AF05A72719E42F00C5225A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF05A62719E42F00C5225A /* SceneDelegate.swift */; };
@@ -70,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				785968CF2C218EC600EE5ED8 /* Musig2Bitcoin in Frameworks */,
 				7889083227F3061F00802D83 /* Musig2Bitcoin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +163,7 @@
 			name = Musig2Demo;
 			packageProductDependencies = (
 				7889083127F3061F00802D83 /* Musig2Bitcoin */,
+				785968CE2C218EC600EE5ED8 /* Musig2Bitcoin */,
 			);
 			productName = Musig2Demo;
 			productReference = 78AF05A12719E42F00C5225A /* Musig2Demo.app */;
@@ -236,6 +239,7 @@
 			mainGroup = 78AF05982719E42F00C5225A;
 			packageReferences = (
 				7889083027F3061F00802D83 /* XCRemoteSwiftPackageReference "musig2-ios-api" */,
+				785968CD2C218EC600EE5ED8 /* XCRemoteSwiftPackageReference "musig2-ios-api" */,
 			);
 			productRefGroup = 78AF05A22719E42F00C5225A /* Products */;
 			projectDirPath = "";
@@ -646,6 +650,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		785968CD2C218EC600EE5ED8 /* XCRemoteSwiftPackageReference "musig2-ios-api" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/chainx-org/musig2-ios-api";
+			requirement = {
+				branch = 2.7.0;
+				kind = branch;
+			};
+		};
 		7889083027F3061F00802D83 /* XCRemoteSwiftPackageReference "musig2-ios-api" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/chainx-org/musig2-ios-api";
@@ -657,6 +669,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		785968CE2C218EC600EE5ED8 /* Musig2Bitcoin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 785968CD2C218EC600EE5ED8 /* XCRemoteSwiftPackageReference "musig2-ios-api" */;
+			productName = Musig2Bitcoin;
+		};
 		7889083127F3061F00802D83 /* Musig2Bitcoin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7889083027F3061F00802D83 /* XCRemoteSwiftPackageReference "musig2-ios-api" */;

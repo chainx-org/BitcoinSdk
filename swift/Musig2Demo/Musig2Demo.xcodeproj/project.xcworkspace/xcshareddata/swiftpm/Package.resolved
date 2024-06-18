@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Musig2Bitcoin",
-        "repositoryURL": "https://github.com/chainx-org/musig2-ios-api",
-        "state": {
-          "branch": null,
-          "revision": "d04fb0e5b49b962387eb1dc62b105b4f7c9f19ad",
-          "version": "2.6.0"
-        }
+  "pins" : [
+    {
+      "identity" : "musig2-ios-api",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/chainx-org/musig2-ios-api",
+      "state" : {
+        "branch" : "2.7.0",
+        "revision" : "373c4cec6ba80e1474029f865a851718d675b700"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }

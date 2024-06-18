@@ -46,12 +46,12 @@ public func getAggPublicKey(pubkeys:[String]) -> String{
     return String.init(cString:get_key_agg(pubkeys.joined(separator: "")))
 }
 
-public func generateThresholdPubkey(pubkeys:[String], threshold: UInt8) -> String {
-    return String.init(cString:generate_threshold_pubkey_musig2(pubkeys.joined(separator: ""), threshold))
+public func generateThresholdPubkey(pubkeys:[String], threshold: UInt8, proto: String) -> String {
+    return String.init(cString:generate_threshold_pubkey_musig2(pubkeys.joined(separator: ""), threshold, proto))
 }
 
-public func generateControlBlock(pubkeys:[String], threshold: UInt8, agg_pubkey: String) -> String {
-    return String.init(cString:generate_control_block_musig2(pubkeys.joined(separator: ""), threshold, agg_pubkey))
+public func generateControlBlock(pubkeys:[String], threshold: UInt8, agg_pubkey: String, proto: String) -> String {
+    return String.init(cString:generate_control_block_musig2(pubkeys.joined(separator: ""), threshold, agg_pubkey, proto))
 }
 
 public func generateSchnorrSignature(message: String, privkey: String) -> String {
@@ -89,12 +89,12 @@ public func generateRawTx(prev_txs: [String], txids: [String], input_indexs: [UI
     return base_tx;
 }
 
-public func getSighash(tx: String, txid: String, input_index: UInt32, agg_pubkey: String, sigversion: UInt32) -> String{
-    return String.init(cString:get_sighash(tx, txid, input_index, agg_pubkey, sigversion));
+public func getSighash(tx: String, txid: String, input_index: UInt32, agg_pubkey: String, sigversion: UInt32, proto: String) -> String{
+    return String.init(cString:get_sighash(tx, txid, input_index, agg_pubkey, sigversion, proto));
 }
 
-public func buildThresholdTx(tx: String, agg_signature: String, agg_pubkey: String, control: String, txid: String, input_index: UInt32) -> String{
-    return String.init(cString:build_raw_script_tx(tx, agg_signature, agg_pubkey, control, txid, input_index));
+public func buildThresholdTx(tx: String, agg_signature: String, agg_pubkey: String, control: String, txid: String, input_index: UInt32, proto: String) -> String{
+    return String.init(cString:build_raw_script_tx(tx, agg_signature, agg_pubkey, control, txid, input_index, proto));
 }
 
 public func buildTaprootTx(tx: String, signature: String, txid: String, input_index: UInt32) -> String{

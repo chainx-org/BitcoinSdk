@@ -30,9 +30,9 @@ char *get_signature_musig2(const char *round2_msg);
 
 char *get_key_agg(const char *pubkeys);
 
-char *generate_threshold_pubkey_musig2(const char *pubkeys, uint8_t threshold);
+char *generate_threshold_pubkey_musig2(const char *pubkeys, uint8_t threshold, const char *protocol);
 
-char *generate_control_block_musig2(const char *pubkeys, uint8_t threshold, const char *agg_pubkey);
+char *generate_control_block_musig2(const char *pubkeys, uint8_t threshold, const char *agg_pubkey, const char *protocol);
 
 char *get_base_tx(const char *prev_tx, const char *txid, uint32_t index);
 
@@ -44,14 +44,16 @@ char *get_sighash(const char *base_tx,
                   const char *txid,
                   uint32_t input_index,
                   const char *agg_pubkey,
-                  uint32_t sigversion);
+                  uint32_t sigversion,
+                  const char *protocol);
 
 char *build_raw_script_tx(const char *base_tx,
                           const char *agg_signature,
                           const char *agg_pubkey,
                           const char *control,
                           const char *txid,
-                          uint32_t input_index);
+                          uint32_t input_index,
+                          const char *protocol);
 
 char *build_raw_key_tx(const char *base_tx,
                        const char *signature,

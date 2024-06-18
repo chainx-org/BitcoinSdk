@@ -6,7 +6,7 @@
 
 Step 1. 项目导入
 
-`File>Add Packages>Github` search [https://github.com/chainx-org/musig2-ios-api](https://github.com/chainx-org/musig2-ios-api) . The current version is **2.6.0**.
+`File>Add Packages>Github` search [https://github.com/chainx-org/musig2-ios-api](https://github.com/chainx-org/musig2-ios-api) . The current version is **2.7.0**.
 
 Step 2. 导入使用
 
@@ -51,7 +51,7 @@ import Musig2Bitcoin
 
 ---
 
-### **getSighash(tx, txid, input_index, agg_pubkey, sigversion)**
+### **getSighash(tx, txid, input_index, agg_pubkey, sigversion, proto)**
 
 #### **说明**
 
@@ -66,6 +66,7 @@ import Musig2Bitcoin
 | **input_index** | UInt32   | 输入的交易索引                                               |
 | **agg_pubkey**  | String   | 输入是非门限地址时，填入""；门限地址时填入聚合公钥(getAggPublicKey) |
 | **sigversion**  | UInt32   | 输入是非门限地址时，填入0；输入是门限地址时，填入1；         |
+| **proto**       | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes"              |
 | **Return**      | String   | 当前输入的交易哈希                                           |
 
 #### **返回错误**
@@ -94,7 +95,7 @@ import Musig2Bitcoin
 
 ---
 
-### **buildTaprootTx(tx, signature, input_index)**
+### **buildTaprootTx(tx, signature, input_index, proto)**
 
 #### **说明**
 
@@ -102,12 +103,13 @@ import Musig2Bitcoin
 
 #### **参数和返回值**
 
-| **Name**        | **Type** | **Description**               |
-| --------------- | -------- | ----------------------------- |
-| **tx**          | String   | generateRawTx计算出的原始交易 |
-| **signature**   | String   | 单个Schnorr签名               |
-| **input_index** | UInt32   | 输入的交易索引                |
-| **Return**      | String   | 返回组装后的交易              |
+| **Name**        | **Type** | **Description**                                 |
+| --------------- | -------- | ----------------------------------------------- |
+| **tx**          | String   | generateRawTx计算出的原始交易                   |
+| **signature**   | String   | 单个Schnorr签名                                 |
+| **input_index** | UInt32   | 输入的交易索引                                  |
+| **proto**       | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
+| **Return**      | String   | 返回组装后的交易                                |
 
 #### **返回错误**
 
@@ -403,7 +405,7 @@ Musig2生成第一轮的状态.
 
 下面是生成门限地址和proof相关的函数
 
-### generateThresholdPubkey(pubkeys, threshold)
+### generateThresholdPubkey(pubkeys, threshold, proto)
 
 #### **说明**
 
@@ -411,11 +413,12 @@ Musig2生成第一轮的状态.
 
 #### **参数和返回值**
 
-| **Name**      | **Type** | **Description** |
-| ------------- | -------- | --------------- |
-| **pubkeys**   | [String] | 所有的公钥列表  |
-| **threshold** | UInt8    | 阈值            |
-| **Return**    | String   | 聚合公钥        |
+| **Name**      | **Type** | **Description**                                 |
+| ------------- | -------- | ----------------------------------------------- |
+| **pubkeys**   | [String] | 所有的公钥列表                                  |
+| **threshold** | UInt8    | 阈值                                            |
+| **proto**     | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
+| **Return**    | String   | 聚合公钥                                        |
 
 #### **返回错误**
 
@@ -423,7 +426,7 @@ Musig2生成第一轮的状态.
 
 ---
 
-### **generateControlBlock(pubkeys, threshold, aggPubkey)**
+### **generateControlBlock(pubkeys, threshold, aggPubkey, proto)**
 
 #### **说明**
 
@@ -431,12 +434,13 @@ Musig2生成第一轮的状态.
 
 #### **参数和返回值**
 
-| **Name**      | **Type** | **Description**          |
-| ------------- | -------- | ------------------------ |
-| **pubkeys**   | [String] | 所有的公钥列表           |
-| **threshold** | UInt8    | 阈值                     |
-| **aggPubkey** | String   | 本次多签参与者的聚合公钥 |
-| **Return**    | String   | proof                    |
+| **Name**      | **Type** | **Description**                                 |
+| ------------- | -------- | ----------------------------------------------- |
+| **pubkeys**   | [String] | 所有的公钥列表                                  |
+| **threshold** | UInt8    | 阈值                                            |
+| **aggPubkey** | String   | 本次多签参与者的聚合公钥                        |
+| **proto**     | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
+| **Return**    | String   | proof                                           |
 
 #### **返回错误**
 
@@ -487,7 +491,7 @@ Musig2生成第一轮的状态.
    txid以及input_index用来定位那笔要花费的输出，agg_pubkey对于非门限签名地址填空字符串`""`，sigversion对于非门限签名地址填0，tx是当前构造的交易。**注意计算sighash的时候，永远要用上面`generateRawTx`构造出的结果不能改变。**
 
    ~~~swift
-   let sighash = getSighash(tx: base_tx, txid: txids[i],input_index: input_indexs[i], agg_pubkey: "", sigversion: 0);
+   let sighash = getSighash(tx: base_tx, txid: txids[i],input_index: input_indexs[i], agg_pubkey: "", sigversion: 0, proto: "");
    ~~~
 
    计算完sighash后，再使用私钥对其进行签名。message就是指sighash，privkey就是私钥。
@@ -511,7 +515,7 @@ Musig2生成第一轮的状态.
 1. 如下生成一个2-of-3的门限签名地址,。首先传入所有参与者的公钥和阈值即可生成门限公钥。
 
    ~~~swift
-   let threshold_pubkey = generateThresholdPubkey(pubkeys: [pubkey0, pubkey1, pubkey2], threshold: 2);
+   let threshold_pubkey = generateThresholdPubkey(pubkeys: [pubkey0, pubkey1, pubkey2], threshold: 2, proto:"");
    ~~~
 
 2. 再将公钥编码成地址，就可以得到门限地址
@@ -542,7 +546,7 @@ Musig2生成第一轮的状态.
 
    ~~~swift
    let pubkey_bc = getAggPublicKey(pubkeys: [pubkey_b, pubkey_c])
-   let sighash = getSighash(tx: base_tx, txid: txids[i], input_index: input_indexs[i], agg_pubkey: pubkey_bc, sigversion: 1);
+   let sighash = getSighash(tx: base_tx, txid: txids[i], input_index: input_indexs[i], agg_pubkey: pubkey_bc, sigversion: 1, proto: "");
    ~~~
 
    **计算签名**：计算完sighash后,B和C两个人利用Musig2进行聚合签名。签名的消息就是sighash。
@@ -588,13 +592,13 @@ Musig2生成第一轮的状态.
    **计算proof**: 门限签名的花费不仅需要签名，还要计算proof。需要传入所有人的公钥，阈值和本次签名参与者B和C的聚合公钥。
 
    ~~~swift
-   let control_block = generateControlBlock(pubkeys: [pubkey_a, pubkey_b, pubkey_c], threshold: 2, agg_pubkey: pubkey_bc)
+   let control_block = generateControlBlock(pubkeys: [pubkey_a, pubkey_b, pubkey_c], threshold: 2, agg_pubkey: pubkey_bc, proto: "")
    ~~~
 
 3. **将上面的签名和proof组装进行交易**。tx就是当前要构造的交易，agg_signature是B和C的聚合签名，agg_pubkey是B和C的聚合公钥，txid和input_index仍然用来定位tx中签名对应的输入，txid和input_index对应的未花费输出与第二步是对应的。
 
    ~~~swift
-   final_tx = buildThresholdTx(tx: final_tx, agg_signature: multi_signature, agg_pubkey: pubkey_bc, control: control_block, txid: txids[i], input_index: input_indexs[i]);
+   final_tx = buildThresholdTx(tx: final_tx, agg_signature: multi_signature, agg_pubkey: pubkey_bc, control: control_block, txid: txids[i], input_index: input_indexs[i], proto: "");
    ~~~
    
    **注意如果tx中有多个输入，那么需要重复Step2和Step3对每个输出进行签名并添加到tx中，如下图所示的for循环：**

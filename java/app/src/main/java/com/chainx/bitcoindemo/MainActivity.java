@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         String final_tx = base_tx;
         for (int i = 0; i < txids.length; i++) {
             String private_key = "4a84a4601e463bc02dd0b8be03f3721187e9fc3105d5d5e8930ff3c8ca15cf40";
-            String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[i], "", 0);
+            String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[i], "", 0, "");
             System.out.println("current sighash:" + sighash);
             String schnorr_signature = Transaction.generateSchnorrSignature(sighash, private_key);
             //schnorr_signature = "245bb0ea88d95a5976fedfed7bfe36068ab18f7240ab5c6964ca884c352ca19423a56a7ba96e0f24f987551bf58ab248dd1a643293dd463b875e8cbfe2143a2b"
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("final threshold_tx:" + final_tx);
 
         // Generate threshold signature address
-        String threshold_pubkey = Mast.generateThresholdPubkey(new String[]{pubkey0, pubkey1, pubkey2}, (byte) 2);
+        String threshold_pubkey = Mast.generateThresholdPubkey(new String[]{pubkey0, pubkey1, pubkey2}, (byte) 2, "");
         String threshold_address = Transaction.getMyAddress(threshold_pubkey, "signet");
         System.out.println("threshold_address:" + threshold_address);
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         final_tx = base_tx;
         for (int i = 0; i < txids.length; i++) {
             String pubkey_bc = Musig2.getAggPublicKey(new String[]{pubkey_b, pubkey_c});
-            String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[i], pubkey_bc, 1);
+            String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[i], pubkey_bc, 1, "");
             System.out.println("current sighash:" + sighash);
             long round1_state0 = Musig2.getRound1State();
             String round1_state_str = Musig2.encodeRound1State(round1_state0);
@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
             String multi_signature = Musig2.getAggSignature(new String[]{round2_msg0, round2_msg1});
             // multi_signature = "2639d4d9882f6e7e42db38dbd2845c87b131737bf557643ef575c49f8fc6928869d9edf5fd61606fb07cced365fdc2c7b637e6ecc85b29906c16d314e7543e94";
             System.out.println("current multi_signature:" + multi_signature);
-            String control_block = Mast.generateControlBlock(new String[]{pubkey_a, pubkey_b, pubkey_c}, (byte) 2,  pubkey_bc);
+            String control_block = Mast.generateControlBlock(new String[]{pubkey_a, pubkey_b, pubkey_c}, (byte) 2,  pubkey_bc, "");
             System.out.println("current control_block:" + control_block);
-            final_tx = Transaction.buildThresholdTx(base_tx, multi_signature, pubkey_bc, control_block, txids[i], input_indexs[i]);
+            final_tx = Transaction.buildThresholdTx(base_tx, multi_signature, pubkey_bc, control_block, txids[i], input_indexs[i], "");
             System.out.println("current threshold_tx:" + final_tx);
         }
         System.out.println("final threshold_tx:" + final_tx);

@@ -19,7 +19,7 @@ Step 2. 添加依赖
 
 ```
 dependencies {
-	        implementation 'com.github.chainx-org:musig2-android-api:1.7.7'
+	        implementation 'com.github.chainx-org:musig2-android-api:1.7.8'
 	}
 ```
 
@@ -68,7 +68,7 @@ import com.example.musig2bitcoin.Transaction;
 
 ---
 
-### **getSighash(tx, txid, input_index, agg_pubkey, sigversion)**
+### **getSighash(tx, txid, input_index, agg_pubkey, sigversion, protocol)**
 
 #### **说明**
 
@@ -83,6 +83,7 @@ import com.example.musig2bitcoin.Transaction;
 | **input_index** | long     | 输入的交易索引                                               |
 | **agg_pubkey**  | String   | 输入是非门限地址时，填入""；门限地址时填入聚合公钥(getAggPublicKey) |
 | **sigversion**  | long     | 输入是非门限地址时，填入0；输入是门限地址时，填入1；         |
+| **protocol**    | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes"              |
 | **Return**      | String   | 当前输入的交易哈希                                           |
 
 #### **返回错误**
@@ -131,7 +132,7 @@ import com.example.musig2bitcoin.Transaction;
 ---
 
 
-### **buildTaprootTx(tx, signature, input_index)**
+### **buildTaprootTx(tx, signature, input_index, protocol)**
 
 #### **说明**
 
@@ -144,6 +145,7 @@ import com.example.musig2bitcoin.Transaction;
 | **tx**          | String   | generateRawTx计算出的原始交易 |
 | **signature**   | String   | 单个Schnorr签名               |
 | **input_index** | long     | 输入的交易索引                |
+| **protocol**       | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
 | **Return**      | String   | 返回组装后的交易              |
 
 #### **返回错误**
@@ -421,7 +423,7 @@ Musig2生成第一轮的状态.
 
 下面是生成门限地址和proof相关的函数
 
-### generateThresholdPubkey(pubkeys, threshold)
+### generateThresholdPubkey(pubkeys, threshold, protocol)
 
 #### **说明**
 
@@ -433,6 +435,7 @@ Musig2生成第一轮的状态.
 | ------------- | -------- | ------------------------------------------------------------ |
 | **pubkeys**   | String[] | 所有的公钥列表                                               |
 | **threshold** | byte     | 阈值                                                         |
+| **protocol**     | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes"           |
 | **Return**    | String   | 聚合公钥                                                     |
 
 #### **返回错误**
@@ -441,7 +444,7 @@ Musig2生成第一轮的状态.
 
 ---
 
-### **generateControlBlock(pubkeys, threshold, aggPubkey)**
+### **generateControlBlock(pubkeys, threshold, aggPubkey, protocol)**
 
 #### **说明**
 
@@ -454,6 +457,7 @@ Musig2生成第一轮的状态.
 | **pubkeys**   | String[] | 所有的公钥列表           |
 | **threshold** | byte     | 阈值                     |
 | **aggPubkey** | String   | 本次多签参与者的聚合公钥 |
+| **protocol**     | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
 | **Return**    | String   | proof                    |
 
 #### **返回错误**
@@ -507,7 +511,7 @@ Musig2生成第一轮的状态.
    txid以及input_index用来定位那笔要花费的输出，agg_pubkey对于非门限签名地址填空字符串`""`，sigversion对于非门限签名地址填0，tx是当前构造的交易
    。**注意计算sighash的时候，永远要用上面`generateRawTx`构造出的结果不能改变。**
    ~~~java
-   String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[0], "", 0);
+   String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[0], "", 0, "");
    ~~~
 
    计算完sighash后，再使用私钥对其进行签名。message就是指sighash，privkey就是私钥。
@@ -531,7 +535,7 @@ Musig2生成第一轮的状态.
 1. 如下生成一个2-of-3的门限签名地址,。首先传入所有参与者的公钥和阈值即可生成门限公钥。
 
    ~~~java
-   String threshold_pubkey = Mast.generateThresholdPubkey(new String[]{publicA, publicB, publicC}, (byte) 2);
+   String threshold_pubkey = Mast.generateThresholdPubkey(new String[]{publicA, publicB, publicC}, (byte) 2, "");
    ~~~
 
 2. 再将公钥编码成地址，就可以得到门限地址
@@ -562,7 +566,7 @@ Musig2生成第一轮的状态.
 
    ~~~java
    String pubkey_bc = Musig2.getAggPublicKey(new String[]{pubkey_b, pubkey_c})
-   sighash = Transaction.getSighash(base_tx, txids[i], input_index[i], pubkey_bc, 1);
+   sighash = Transaction.getSighash(base_tx, txids[i], input_index[i], pubkey_bc, 1, "");
    ~~~
 
    **计算签名**：计算完sighash后,B和C两个人利用Musig2进行聚合签名。签名的消息就是sighash。
@@ -608,13 +612,13 @@ Musig2生成第一轮的状态.
    **计算proof**: 门限签名的花费不仅需要签名，还要计算proof。需要传入所有人的公钥，阈值和本次签名参与者B和C的聚合公钥。
 
    ~~~java
-   String control_block = Msat.generateControlBlock(new String[]{pubkey_a, pubkey_b, pubkey_c}, (byte) 2, pubkey_bc)
+   String control_block = Msat.generateControlBlock(new String[]{pubkey_a, pubkey_b, pubkey_c}, (byte) 2, pubkey_bc, "")
    ~~~
 
 3. **将上面的签名和proof组装进行交易**。tx就是当前要构造的交易，agg_signature是B和C的聚合签名，agg_pubkey是B和C的聚合公钥，txid和input_index仍然用来定位tx中签名对应的输入，txid和input_index对应的未花费输出与第二步是对应的。
 
    ~~~java
-   final_tx = Transaction.buildThresholdTx(base_tx, multi_signature, pubkey_bc, control_block, txids[i], input_indexs[i]);
+   final_tx = Transaction.buildThresholdTx(base_tx, multi_signature, pubkey_bc, control_block, txids[i], input_indexs[i], "");
    ~~~
    
    **注意如果tx中有多个输入，那么需要重复Step2和Step3对每个输出进行签名并添加到tx中，如下图所示的for循环：**

@@ -19,7 +19,7 @@ Step 2. Add dependencies
 
 ```
 dependencies {
-implementation'com.github.chainx-org:musig2-android-api:1.7.7'
+implementation'com.github.chainx-org:musig2-android-api:1.7.8'
 }
 ```
 
@@ -68,7 +68,7 @@ Construct an original transaction, which is used to calculate the transaction ha
 
 ---
 
-### **getSighash(prev_tx, tx, input_index, agg_pubkey, sigversion)**
+### **getSighash(prev_tx, tx, input_index, agg_pubkey, sigversion, protocol)**
 
 #### **illustrate**
 
@@ -82,7 +82,8 @@ Calculate the transaction hash (sighash). A transaction has multiple inputs, and
 | **tx**          | String   | Result returned by generateRawTx                                                                                                                 |
 | **input_index** | long     | Input transaction index                                                                                                                          |
 | **agg_pubkey**  | String   | When the input is a non-threshold address, fill in ""; when the input is a threshold address, fill in the aggregate public key (getAggPublicKey) |
-| **sigversion**  | long     | When the input is a non-threshold address, fill in 0; when the input is a threshold address, fill in 1;                                          |
+| **sigversion**  | long     | When the input is a non-threshold address, fill in 0; when the input is a threshold address, fill in 1 |   
+| **protocol**    | String   | Protocol name，btc:"", brc20: "brc2o", runes:"runes"                                                |
 | **Return**      | String   | Current input transaction hash                                                                                                                   |
 
 #### **Return Error**
@@ -130,7 +131,7 @@ The unsigned transaction text generated from `generateRawTx`, carrying custom ad
 
 ---
 
-### **buildTaprootTx(tx, signature, input_index)**
+### **buildTaprootTx(tx, signature, input_index, protocol)**
 
 #### **illustrate**
 
@@ -143,6 +144,7 @@ When the address is not threshold, use this function to assemble the signature g
 | **tx**          | String   | Original transaction calculated by generateRawTx |
 | **signature**   | String   | Single Schnorr signature                         |
 | **input_index** | long     | Input transaction index                          |
+| **protocol**       | String   | Protocol name，btc:"", brc20: "brc2o", runes:"runes" |
 | **Return**      | String   | Return the assembled transaction                 |
 
 #### **Return Error**
@@ -438,7 +440,7 @@ Generate threshold pubkey
 
 ---
 
-### **generateControlBlock(pubkeys, threshold, aggPubkey)**
+### **generateControlBlock(pubkeys, threshold, aggPubkey, protocol)**
 
 #### **illustrate**
 
@@ -451,6 +453,7 @@ Generate proof
 | **pubkeys**   | String[] | List of all public keys                                      |
 | **threshold** | byte     | Threshold                                                    |
 | **aggPubkey** | String   | The aggregate public key of this multi-signature participant |
+| **protocol**     | String   | Protocol name，btc:"", brc20: "brc2o", runes:"runes"      |
 | **Return**    | String   | proof                                                        |
 
 #### **Return Error**
@@ -505,7 +508,7 @@ The following examples provide: constructing a non-threshold address, the cost o
    .**Note that when calculating sighash, always use the above `generateRawTx` to construct the result and cannot be changed. **
    
    ~~~java
-   String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[0], "", 0);
+   String sighash = Transaction.getSighash(base_tx, txids[i], input_indexs[0], "", 0, "");
    ~~~
 
    After calculating the sighash, use the private key to sign it. The message refers to sighash, and the privkey refers to the private key.
@@ -529,7 +532,7 @@ The following examples provide: constructing a non-threshold address, the cost o
 1. Generate a 2-of-3 threshold signature address as follows. First, pass in the public keys and thresholds of all participants to generate the threshold public keys.
 
    ~~~java
-   String threshold_pubkey = Mast.generateThresholPubkey(new String[]{publicA, publicB, publicC}, (byte) 2);
+   String threshold_pubkey = Mast.generateThresholdPubkey(new String[]{publicA, publicB, publicC}, (byte) 2, "");
    ~~~
 
 2. Then encode the public key into an address to get the threshold address
@@ -559,7 +562,7 @@ The following examples provide: constructing a non-threshold address, the cost o
 
    ~~~java
    String pubkey_bc = Musig2.getAggPublicKey(new String[]{pubkey_b, pubkey_c})
-   sighash = Transaction.getSighash(base_tx, txids[i], input_index[i], pubkey_bc, 1);
+   sighash = Transaction.getSighash(base_tx, txids[i], input_index[i], pubkey_bc, 1, "");
    ~~~
 
    **Calculate signature**: After calculating sighash, B and C use Musig2 to aggregate signatures. The signed message is sighash.
@@ -605,7 +608,7 @@ The following examples provide: constructing a non-threshold address, the cost o
    **Calculate proof**: The cost of threshold signature not only requires signature, but also calculates proof. It is necessary to pass in the public key of everyone, the threshold, and the aggregate public key of participants B and C of this signature.
 
    ~~~java
-   String control_block = Msat.generateControlBlock(new String[]{pubkey_a, pubkey_b, pubkey_c}, (byte) 2, pubkey_bc)
+   String control_block = Msat.generateControlBlock(new String[]{pubkey_a, pubkey_b, pubkey_c}, (byte) 2, pubkey_bc, "")
    ~~~
 
 3. **Assemble the above signature for transaction**. tx is the current transaction to be constructed, agg_signature is the aggregated signature of B and C, agg_pubkey is the aggregated public key of B and C, txid and input_index are still used to locate the input corresponding to the signature in tx, and the unspent output corresponding to txid and input_index The second step is corresponding.

@@ -83,7 +83,7 @@ import com.example.musig2bitcoin.Transaction;
 | **input_index** | long     | 输入的交易索引                                               |
 | **agg_pubkey**  | String   | 输入是非门限地址时，填入""；门限地址时填入聚合公钥(getAggPublicKey) |
 | **sigversion**  | long     | 输入是非门限地址时，填入0；输入是门限地址时，填入1；         |
-| **protocol**    | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes"              |
+| **protocol**    | String   | 协议名称，btc:"", brc20: "brc20", runes:"runes"              |
 | **Return**      | String   | 当前输入的交易哈希                                           |
 
 #### **返回错误**
@@ -132,7 +132,7 @@ import com.example.musig2bitcoin.Transaction;
 ---
 
 
-### **buildTaprootTx(tx, signature, input_index, protocol)**
+### **buildTaprootTx(tx, signature, input_index)**
 
 #### **说明**
 
@@ -145,7 +145,6 @@ import com.example.musig2bitcoin.Transaction;
 | **tx**          | String   | generateRawTx计算出的原始交易 |
 | **signature**   | String   | 单个Schnorr签名               |
 | **input_index** | long     | 输入的交易索引                |
-| **protocol**       | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
 | **Return**      | String   | 返回组装后的交易              |
 
 #### **返回错误**
@@ -154,7 +153,7 @@ import com.example.musig2bitcoin.Transaction;
 
 ---
 
-### **buildThresholdTx(tx, agg_signature, agg_pubkey, control, input_index)**
+### **buildThresholdTx(tx, agg_signature, agg_pubkey, control, input_index, protocol)**
 
 #### **说明**
 
@@ -169,6 +168,7 @@ import com.example.musig2bitcoin.Transaction;
 | **agg_pubkey**    | String   | Musig2聚合公钥                |
 | **control**       | String   | Mast生成的proof               |
 | **input_index**   | long     | 输入的交易索引                |
+| **protocol**       | String   | 协议名称，btc:"", brc20: "brc20", runes:"runes" |
 | **Return**        | String   | 返回组装后的交易              |
 
 #### **返回错误**
@@ -435,7 +435,7 @@ Musig2生成第一轮的状态.
 | ------------- | -------- | ------------------------------------------------------------ |
 | **pubkeys**   | String[] | 所有的公钥列表                                               |
 | **threshold** | byte     | 阈值                                                         |
-| **protocol**     | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes"           |
+| **protocol**     | String   | 协议名称，btc:"", brc20: "brc20", runes:"runes"           |
 | **Return**    | String   | 聚合公钥                                                     |
 
 #### **返回错误**
@@ -457,7 +457,7 @@ Musig2生成第一轮的状态.
 | **pubkeys**   | String[] | 所有的公钥列表           |
 | **threshold** | byte     | 阈值                     |
 | **aggPubkey** | String   | 本次多签参与者的聚合公钥 |
-| **protocol**     | String   | 协议名称，btc:"", brc20: "brc2o", runes:"runes" |
+| **protocol**     | String   | 协议名称，btc:"", brc20: "brc20", runes:"runes" |
 | **Return**    | String   | proof                    |
 
 #### **返回错误**
